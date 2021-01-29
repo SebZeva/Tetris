@@ -11,24 +11,36 @@ package model;
  */
 public class Board
 {
-    private final int sizeX;
-    private final int sizeY;
+    private final int WIDTH;
+    private final int HEIGHT;
+    private final Cell[][] cells;
 
-    public Board(int sizeX, int sizeY)
+    public Board(int width, int height)
     {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        this.WIDTH = width;
+        this.HEIGHT = height;
+        cells = new Cell[width][height];
+        for (int top = 0; top < height; top++)
+        {
+            for (int left = 0; left < width; left++)
+            {
+                cells[left][top] = Cell.TRANSPARENT;
+            }
+        }
     }
 
-    public int getSizeX()
+    public int getWidth()
     {
-        return sizeX;
+        return WIDTH;
     }
 
-    public int getSizeY()
+    public int getHeight()
     {
-        return sizeY;
+        return HEIGHT;
     }
     
-    
+    public boolean isEmpty(int left, int top)
+    {
+        return cells[left][top].isEmpty();
+    }
 }
