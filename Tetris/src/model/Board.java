@@ -41,6 +41,10 @@ public class Board
     
     public boolean isEmpty(int left, int top)
     {
+        if (left < 0 || top < 0 || left >= WIDTH || top >= HEIGHT)
+        {
+            return false;
+        }
         return cells[left][top].isEmpty();
     }
 }

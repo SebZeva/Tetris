@@ -20,9 +20,9 @@ public class Tetromino
     private int rotation;
     private int posX;
     private int posY;
-    private Color kolorea;
+    private Color colour;
 
-    static final String[][] S_SHAPE =
+    private static final String[][] S_SHAPE =
     {
         {
             ".....",
@@ -39,7 +39,7 @@ public class Tetromino
             "....."
         }
     };
-    static final String[][] Z_SHAPE =
+    private static final String[][] Z_SHAPE =
     {
         {
             ".....",
@@ -56,7 +56,7 @@ public class Tetromino
             "....."
         }
     };
-    static final String[][] I_SHAPE =
+    private static final String[][] I_SHAPE =
     {
         {
             "..0..",
@@ -73,7 +73,7 @@ public class Tetromino
             "....."
         }
     };
-    static final String[][] O_SHAPE =
+    private static final String[][] O_SHAPE =
     {
         {
             ".....",
@@ -83,7 +83,7 @@ public class Tetromino
             "....."
         }
     };
-    static final String[][] J_SHAPE =
+    private static final String[][] J_SHAPE =
     {
         {
             ".....",
@@ -114,7 +114,7 @@ public class Tetromino
             "....."
         }
     };
-    static final String[][] L_SHAPE =
+    private static final String[][] L_SHAPE =
     {
         {
             ".....",
@@ -145,7 +145,7 @@ public class Tetromino
             "....."
         }
     };
-    static final String[][] T_SHAPE =
+    private static final String[][] T_SHAPE =
     {
         {
             ".....",
@@ -176,9 +176,9 @@ public class Tetromino
             "....."
         }
     };
-    static final Map<ShapeEnum, String[][]> SHAPES = getShapes();
+    private static final Map<ShapeEnum, String[][]> SHAPES = getShapes();
 
-    static final Color[] colors =
+    static final Color[] colours =
     {
         Color.BLUE, Color.GREEN, Color.RED,
         Color.YELLOW, Color.WHITE, Color.ORANGE, Color.PINK
@@ -202,11 +202,30 @@ public class Tetromino
     {
         ShapeEnum shape = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
                 values().length - 1)];
+        
         rotation = 0;
         posX = 0;
         posY = 0;
-        kolorea = colors[Random.randomInt(0, colors.length - 1)];
+        colour = colours[Random.randomInt(0, colours.length - 1)];
     }
 
-    
+    private boolean collides(Board board)
+    {
+        String[] current = SHAPES.get(shape)[rotation];
+        for (int col = 0; col < current.length; ++col)
+        {
+            String currentRow = current[col];
+            for (int row = 0; row < currentRow.length(); ++row)
+            {
+                if (currentRow.charAt(row) == '0')
+                {
+                    if (!board.isEmpty(row, col))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
