@@ -15,6 +15,12 @@ public class Board
     private final int HEIGHT;
     private final Cell[][] cells;
 
+    /**
+     * Constructor for board.
+     * 
+     * @param width horizontal length of the board in cells.
+     * @param height vertical length of the board in cells.
+     */
     public Board(int width, int height)
     {
         this.WIDTH = width;
@@ -29,16 +35,33 @@ public class Board
         }
     }
 
+    /**
+     * Getter for the width of the board.
+     * 
+     * @return horizontal length of the board in cells.
+     */
     public int getWidth()
     {
         return WIDTH;
     }
 
+    /**
+     * Getter for the height of the board.
+     * 
+     * @return vertical length of the board in cells.
+     */
     public int getHeight()
     {
         return HEIGHT;
     }
-    
+
+    /**
+     * Looks at a cell and tells if it is empty.
+     * 
+     * @param left distance in cells to the left of the board.
+     * @param top distance in cells to the top of the board.
+     * @return boolean representing whether the cell is empty.
+     */
     public boolean isEmpty(int left, int top)
     {
         if (left < 0 || top < 0 || left >= WIDTH || top >= HEIGHT)

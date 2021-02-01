@@ -181,6 +181,9 @@ public class Tetromino
     private static final Map<ShapeEnum, int[][][]> SHAPES_COORD =
             getShapesCoord(SHAPES_STRING);
 
+    /**
+     * Colours the Tetromino may take.
+     */
     static final Color[] colours =
     {
         Color.BLUE, Color.GREEN, Color.RED,
@@ -213,7 +216,7 @@ public class Tetromino
             {
                 String[] currentRot = shape[rot];
                 int count = 0;
-                rotations:
+                rotation:
                 for (int row = 0; row < currentRot.length; ++row)
                 {
                     String currentRow = currentRot[row];
@@ -226,7 +229,7 @@ public class Tetromino
                             ++count;
                             if (count == 4)
                             {
-                                break rotations;
+                                break rotation;
                             }
                         }
                     }
@@ -239,7 +242,7 @@ public class Tetromino
 
     public Tetromino()
     {
-        ShapeEnum shape = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
+        ShapeEnum s = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
                 values().length - 1)];
 
         rotation = 0;
@@ -261,6 +264,12 @@ public class Tetromino
         return false;
     }
 
+    /**
+     * Makes a tetromino fall.
+     * 
+     * @param board Board object on which the tetromino is.
+     * @return boolean representing success.
+     */
     public boolean fall(Board board)
     {
         ++top;
@@ -272,6 +281,13 @@ public class Tetromino
         return true;
     }
 
+    /**
+     * Makes a tetromino move either to the right or to the left.
+     * 
+     * @param board Board object on which the tetromino is.
+     * @param right Whether the tetromino will move right (do left if false).
+     * @return boolean representing success.
+     */
     public boolean move(Board board, boolean right)
     {
         int delta;
@@ -292,7 +308,13 @@ public class Tetromino
         return true;
     }
     
-
+    /**
+     * 
+     * 
+     * @param board Board object on which the tetromino is.
+     * @param right Whether the tetromino will rotate right (do left if false).
+     * @return boolean representing success.
+     */
     public boolean rotate(Board board, boolean right)
     {
         int delta;

@@ -29,11 +29,21 @@ public enum Cell
         this.colour = colour;
     }
 
+    /**
+     * Getter for the current colour.
+     * 
+     * @return colour of the cell.
+     */
     public Color getColour()
     {
         return colour;
     }
 
+    /**
+     * Tests for transparent colour.
+     * 
+     * @return boolean indicating whether colour is transparent.
+     */
     public boolean isEmpty()
     {
         return colour.equals(new Color(0, 0, 0, 0));

@@ -6,6 +6,7 @@
 package model;
 
 /**
+ * Stores codes for each shape.
  *
  * @author SebZeva
  */
