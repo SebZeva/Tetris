@@ -11,6 +11,8 @@ public class TetrisJPanel extends JPanel {
    // Name-constants
    public static final int CANVAS_WIDTH = 640;
    public static final int CANVAS_HEIGHT = 480;
+   public static final int GAME_WIDTH = 640;
+   public static final int GAME_HEIGHT = 480;
    public static final String TITLE = "Tetris";
    // ......
  
