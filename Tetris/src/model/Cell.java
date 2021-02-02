@@ -31,17 +31,20 @@ public enum Cell
 
     /**
      * Getter for the current colour.
-     * 
+     *
      * @return colour of the cell.
      */
     public Color getColour()
     {
-        return colour;
+        return new Color(colour.getRed(), colour.getGreen(), colour.getBlue(),
+                colour.getAlpha());
     }
+
+    
 
     /**
      * Tests for transparent colour.
-     * 
+     *
      * @return boolean indicating whether colour is transparent.
      */
     public boolean isEmpty()

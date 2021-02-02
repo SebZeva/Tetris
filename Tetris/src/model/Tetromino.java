@@ -5,7 +5,8 @@
  */
 package model;
 
-import java.awt.Color;
+import java.awt.Graphics2D;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,13 +16,13 @@ import java.util.Map;
  */
 public class Tetromino
 {
-
+    
     private ShapeEnum shape;
     private int rotation;
     private int left;
     private int top;
-    private final Color colour;
-
+    private final Cell colour;
+    
     private static final String[][] S_SHAPE =
     {
         {
@@ -176,20 +177,52 @@ public class Tetromino
             "....."
         }
     };
-    private static final Map<ShapeEnum, String[][]> SHAPES_STRING = getShapes();
+    private static final Map<ShapeEnum, String[][]> SHAPES_STRING;
+    
+    static
+    {
+        Map<ShapeEnum, String[][]> aMap = getShapes();
+        SHAPES_STRING = Collections.
+                unmodifiableMap(aMap);
+    }
+    
+    private static final Map<ShapeEnum, int[][][]> SHAPES_COORD;
+    
+    static
+    {
+        Map<ShapeEnum, int[][][]> aMap = getShapesCoord(SHAPES_STRING);
+        SHAPES_COORD = Collections.unmodifiableMap(aMap);
+    }
 
-    private static final Map<ShapeEnum, int[][][]> SHAPES_COORD =
-            getShapesCoord(SHAPES_STRING);
+    public int getLeft()
+    {
+        return left;
+    }
+    
+    public int getTop()
+    {
+        return top;
+    }
+    
+    public int[][] getRelativeCoords()
+    {
+        return SHAPES_COORD.get(shape)[rotation];
+    }
+    
+    public Cell getCell()
+    {
+        return colour;
+    }
 
     /**
      * Colours the Tetromino may take.
      */
-    static final Color[] colours =
+    static final Cell[] colours =
     {
-        Color.BLUE, Color.GREEN, Color.RED,
-        Color.YELLOW, Color.WHITE, Color.ORANGE, Color.PINK
+        Cell.BLUE, Cell.GREEN, Cell.RED,
+        Cell.YELLOW, Cell.WHITE, Cell.ORANGE, Cell.PINK
     };
-
+    
     private static HashMap<ShapeEnum, String[][]> getShapes()
     {
         HashMap<ShapeEnum, String[][]> shapes =
@@ -203,7 +236,7 @@ public class Tetromino
         shapes.put(ShapeEnum.T, T_SHAPE);
         return shapes;
     }
-
+    
     private static Map<ShapeEnum, int[][][]> getShapesCoord(
             Map<ShapeEnum, String[][]> stringShapes)
     {
@@ -239,24 +272,24 @@ public class Tetromino
         }
         return shapes;
     }
-
+    
     public Tetromino()
     {
-        ShapeEnum s = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
+        shape = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
                 values().length - 1)];
-
+        
         rotation = 0;
         left = 0;
         top = 0;
         colour = colours[Random.randomInt(0, colours.length - 1)];
     }
-
-    private boolean collides(Board board)
+    
+    public boolean collides(Board board)
     {
         int[][] current = SHAPES_COORD.get(shape)[rotation];
         for (int[] coords : current)
         {
-            if (!board.isEmpty(coords[0], coords[1]))
+            if (!board.isEmpty(left + coords[0], top + coords[1]))
             {
                 return true;
             }
@@ -266,7 +299,7 @@ public class Tetromino
 
     /**
      * Makes a tetromino fall.
-     * 
+     *
      * @param board Board object on which the tetromino is.
      * @return boolean representing success.
      */
@@ -283,7 +316,7 @@ public class Tetromino
 
     /**
      * Makes a tetromino move either to the right or to the left.
-     * 
+     *
      * @param board Board object on which the tetromino is.
      * @param right Whether the tetromino will move right (do left if false).
      * @return boolean representing success.
@@ -307,10 +340,10 @@ public class Tetromino
         }
         return true;
     }
-    
+
     /**
-     * 
-     * 
+     *
+     *
      * @param board Board object on which the tetromino is.
      * @param right Whether the tetromino will rotate right (do left if false).
      * @return boolean representing success.
@@ -342,24 +375,16 @@ public class Tetromino
         }
         return true;
     }
-
-    public static void main(String[] args)
+    
+    public void paint(Graphics2D g2d, int boardLeft, int boardTop, int cellSize)
     {
-        for (ShapeEnum s : SHAPES_COORD.keySet())
+        int[][] coordsGroup = SHAPES_COORD.get(shape)[rotation];
+        for (int[] coords : coordsGroup)
         {
-            System.out.println(s);
-            for (int[][] currentRot : SHAPES_COORD.get(s))
-            {
-                System.out.println("\trot:");
-                for (int[] currentPiece : currentRot)
-                {
-                    System.out.println("\t\tpiece:");
-                    for (int coord : currentPiece)
-                    {
-                        System.out.println("\t\t\t" + coord);
-                    }
-                }
-            }
+            g2d.fillRoundRect(boardLeft + (left + coords[0]) * cellSize,
+                    boardTop + (top + coords[1]) * cellSize, cellSize, cellSize,
+                    cellSize / 3, cellSize / 3);
         }
     }
+    
 }

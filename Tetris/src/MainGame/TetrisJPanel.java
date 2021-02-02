@@ -1,63 +1,90 @@
-
 package MainGame;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
- 
-/** ... Purpose of this program ... */
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import model.Board;
+import model.Tetromino;
+
 @SuppressWarnings("serial")
-public class TetrisJPanel extends JPanel {
-   // Name-constants
-   public static final int CANVAS_WIDTH = 640;
-   public static final int CANVAS_HEIGHT = 480;
-   public static final int GAME_WIDTH = 640;
-   public static final int GAME_HEIGHT = 480;
-   public static final String TITLE = "Tetris";
-   // ......
- 
-   // Declare private variables of GUI components
-   // ......
- 
-   /** Constructor to setup the GUI components */
-   public TetrisJPanel() {
-      setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-      // "super" JPanel container sets layout
-      // setLayout(new ....Layout());
- 
-      // Allocate the GUI components
-      // .....
- 
-      // "super" JPanel adds components
-      // add(....)
- 
-      // Source objects add listeners
-      // .....
-   }
- 
-   /** Custom painting codes on this JPanel */
-   @Override
-   public void paintComponent(Graphics g) {
-      super.paintComponent(g);  // fill background
-      setBackground(Color.BLACK);
- 
-      // Custom painting codes
-      // ......
-   }
- 
-   /** The entry main() method */
-   public static void main(String[] args) {
-      // Run GUI codes in the Event-Dispatching thread for thread safety
-      SwingUtilities.invokeLater(new Runnable() {
-         public void run() {
-            JFrame frame = new JFrame(TITLE);
-            // Set the content-pane of the JFrame to an instance of main JPanel
-            frame.setContentPane(new TetrisJPanel());
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();                      // JFrame packs its components
-            frame.setLocationRelativeTo(null); // center the application window
-            frame.setVisible(true);            // show it
-         }
-      });
-   }
+public class TetrisJPanel
+        extends JPanel
+{
+
+    final int BOARD_TOP = 100;
+    final int BOARD_LEFT = 600;
+    final int CANVAS_WIDTH = 1600;
+    final int CANVAS_HEIGHT = 900;
+    final int BOARD_WIDTH = 10;
+    final int BOARD_HEIGHT = 20;
+    final int CELL_SIZE = 40;
+    public static final String TITLE = "Tetris";
+    private Tetromino currentTetromino = new Tetromino();
+    final Board board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
+
+    private int update(long nanos)
+    {
+        if (nanos > 100000000)
+        {
+            if (!currentTetromino.fall(board))
+            {
+                board.fuse(currentTetromino);
+                currentTetromino = new Tetromino();
+                if (currentTetromino.collides(board))
+                {
+                    return 2;
+                }
+            }
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public void paint(Graphics g)
+    {
+        super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(Color.BLACK);
+        board.paint(g2d, BOARD_LEFT, BOARD_TOP, CELL_SIZE);
+        g2d.setColor(currentTetromino.getCell().getColour());
+        currentTetromino.paint(g2d, BOARD_LEFT, BOARD_TOP, CELL_SIZE);
+    }
+
+    public static void main(String[] args)
+            throws InterruptedException
+    {
+        JFrame frame = new JFrame(TITLE);
+        TetrisJPanel game = new TetrisJPanel();
+        frame.add(game);
+        frame.setSize(game.CANVAS_WIDTH, game.CANVAS_HEIGHT);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        long nanos = System.nanoTime();
+        long currTime = nanos;
+        mainLoop:
+        while (true)
+        {
+            currTime = System.nanoTime();
+            switch (game.update(currTime - nanos))
+            {
+                case 1:
+                   nanos = currTime;
+                   break;
+                case 2:
+                    break mainLoop;
+                default:
+                    break;
+            }
+            game.repaint();
+            Thread.sleep(10);
+        }
+        System.out.println("Done");
+    }
 }
