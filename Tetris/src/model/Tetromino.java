@@ -60,17 +60,17 @@ public class Tetromino
     private static final String[][] I_SHAPE =
     {
         {
+            ".....",
             "..0..",
             "..0..",
             "..0..",
-            "..0..",
-            "....."
+            "..0.."
         },
         {
             ".....",
             ".....",
-            "0000.",
             ".....",
+            "0000.",
             "....."
         }
     };
@@ -78,9 +78,9 @@ public class Tetromino
     {
         {
             ".....",
+            ".00..",
+            ".00..",
             ".....",
-            ".00..",
-            ".00..",
             "....."
         }
     };
@@ -217,10 +217,19 @@ public class Tetromino
     /**
      * Colours the Tetromino may take.
      */
-    static final Cell[] colours =
+    static final Map<ShapeEnum, Cell> COLOURS;
+    
+    static
     {
-        Cell.BLUE, Cell.GREEN, Cell.RED,
-        Cell.YELLOW, Cell.WHITE, Cell.ORANGE, Cell.PINK
+        Map<ShapeEnum, Cell> aMap = new HashMap<ShapeEnum, Cell>();
+        aMap.put(ShapeEnum.O, Cell.YELLOW);
+        aMap.put(ShapeEnum.S, Cell.RED);
+        aMap.put(ShapeEnum.L, Cell.ORANGE);
+        aMap.put(ShapeEnum.J, Cell.BLUE);
+        aMap.put(ShapeEnum.I, Cell.CYAN);
+        aMap.put(ShapeEnum.T, Cell.PINK);
+        aMap.put(ShapeEnum.Z, Cell.GREEN);
+        COLOURS = Collections.unmodifiableMap(aMap);
     };
     
     private static HashMap<ShapeEnum, String[][]> getShapes()
@@ -279,9 +288,9 @@ public class Tetromino
                 values().length - 1)];
         
         rotation = 0;
-        left = 0;
-        top = 0;
-        colour = colours[Random.randomInt(0, colours.length - 1)];
+        left = 2;
+        top = -1;
+        colour = COLOURS.get(shape);
     }
     
     public boolean collides(Board board)
@@ -378,6 +387,7 @@ public class Tetromino
     
     public void paint(Graphics2D g2d, int boardLeft, int boardTop, int cellSize)
     {
+        g2d.setColor(COLOURS.get(shape).getColour());
         int[][] coordsGroup = SHAPES_COORD.get(shape)[rotation];
         for (int[] coords : coordsGroup)
         {

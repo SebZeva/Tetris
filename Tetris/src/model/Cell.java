@@ -17,10 +17,10 @@ public enum Cell
     GREEN(Color.GREEN),
     RED(Color.RED),
     YELLOW(Color.YELLOW),
-    WHITE(Color.WHITE),
+    CYAN(Color.CYAN),
     ORANGE(Color.ORANGE),
     PINK(Color.PINK),
-    TRANSPARENT(new Color(0, 0, 0, 0));
+    BLACK(Color.BLACK);
 
     private Color colour;
 
@@ -49,6 +49,6 @@ public enum Cell
      */
     public boolean isEmpty()
     {
-        return colour.equals(new Color(0, 0, 0, 0));
+        return colour.equals(Color.BLACK);
     }
 }

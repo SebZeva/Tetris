@@ -33,7 +33,7 @@ public class Board
         {
             for (int left = 0; left < width; left++)
             {
-                cells[left][top] = Cell.TRANSPARENT;
+                cells[left][top] = Cell.BLACK;
             }
         }
     }
@@ -94,6 +94,7 @@ public class Board
         {
             for (int y = 0; y < cells[x].length; ++y)
             {
+                g2d.setColor(cells[x][y].getColour());
                 g2d.fillRoundRect(left + x * cellSize, top + y * cellSize,
                         cellSize, cellSize, cellSize / 3, cellSize / 3);
 
