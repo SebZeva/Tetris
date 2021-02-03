@@ -34,9 +34,9 @@ public class Tetromino
         },
         {
             ".....",
-            "..O..",
-            "..OO.",
-            "...O.",
+            "..0..",
+            "..00.",
+            "...0.",
             "....."
         }
     };
@@ -397,4 +397,21 @@ public class Tetromino
         }
     }
     
+    public static void main(String[] args)
+    {
+        for (ShapeEnum sh : SHAPES_COORD.keySet())
+        {
+            System.out.println(sh);
+            for (int[][] rot : SHAPES_COORD.get(sh))
+            {
+                System.out.println("\trot:");
+                for(int[] coords : rot)
+                {
+                    System.out.println("\t\tcoords:");
+                    System.out.println("\t\t\t" + coords[0]);
+                    System.out.println("\t\t\t" + coords[1]);
+                }
+            }
+        }
+    }
 }

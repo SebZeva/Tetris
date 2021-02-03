@@ -23,7 +23,8 @@ public class TetrisJPanel
     final int BOARD_WIDTH = 10;
     final int BOARD_HEIGHT = 20;
     final int CELL_SIZE = 40;
-    long clock_nano = 200000000;
+    long clockNanoUpdate = 200000000;
+    long clockNanoMove = 80000000;
     public static final String TITLE = "Tetris";
     private Tetromino currentTetromino = new Tetromino();
     final Board board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
@@ -40,7 +41,8 @@ public class TetrisJPanel
 
     private int update(long nanosUpdate, long nanosMove)
     {
-        if (nanosUpdate, long nanosMove > clock_nano)
+        int ret = 0;
+        if (nanosUpdate > clockNanoUpdate)
         {
             if (!currentTetromino.fall(board))
             {
@@ -48,12 +50,17 @@ public class TetrisJPanel
                 currentTetromino = new Tetromino();
                 if (currentTetromino.collides(board))
                 {
-                    return 2;
+                    return 4;
                 }
             }
-            return 1;
+            ret += 1;
         }
-        return 0;
+        if (nanosMove > clockNanoMove && (moveRight ^ moveLeft))
+        {
+            currentTetromino.move(board, moveRight);
+            ret += 2;
+        }
+        return ret;
     }
 
     @Override
@@ -81,20 +88,23 @@ public class TetrisJPanel
 
         long nanos = System.nanoTime();
         long currTime = nanos;
-        long currTimeMove = nanos;
+        long nanosMove = nanos;
         mainLoop:
         while (true)
         {
             currTime = System.nanoTime();
-            switch (game.update(currTime - nanos))
+            int result = game.update(currTime - nanos, currTime - nanosMove);
+            if ((result & 1) == 1)
             {
-                case 1:
-                    nanos = currTime;
-                    break;
-                case 2:
-                    break mainLoop;
-                default:
-                    break;
+                nanos = currTime;
+            }
+            if ((result & 2) == 2)
+            {
+                nanosMove = currTime;
+            }
+            else if (result == 4)
+            {
+                break mainLoop;
             }
             game.repaint();
             Thread.sleep(10);

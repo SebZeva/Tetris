@@ -6,6 +6,10 @@
 package model;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -76,6 +80,7 @@ public class Board
 
     public void fuse(Tetromino t)
     {
+        Set<Integer> yCoords = new TreeSet<Integer>();
         int[] coords =
         {
             t.getLeft(), t.getTop()
@@ -85,6 +90,25 @@ public class Board
         {
             cells[coords[0] + relCoords[0]][coords[1] + relCoords[1]] = t.
                     getCell();
+            yCoords.add(coords[1] + relCoords[1]);
+        }
+        yFor:
+        for (Integer yCoord : yCoords)
+        {
+            for (int xCoord = 0; xCoord < WIDTH; ++xCoord)
+            {
+                if (cells[xCoord][yCoord].isEmpty())
+                {
+                    continue yFor;
+                }
+            }
+            for (int j = yCoord; j > 0; --j)
+            {
+                for (int i = 0; i < WIDTH; ++i)
+                {
+                    cells[i][j] = cells[i][j - 1];
+                }
+            }
         }
     }
 
