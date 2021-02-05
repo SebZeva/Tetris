@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.Board;
@@ -16,14 +17,14 @@ public class TetrisJPanel
         extends JPanel
 {
 
-    final int BOARD_TOP = 60;
+    final int BOARD_TOP = 50;
     final int BOARD_LEFT = 600;
     final int CANVAS_WIDTH = 1600;
     final int CANVAS_HEIGHT = 900;
     final int BOARD_WIDTH = 10;
     final int BOARD_HEIGHT = 20;
     final int CELL_SIZE = 40;
-    long clockNanoUpdate = 200000000;
+    long clockNanoUpdate = 250000000;
     long clockNanoMove = 80000000;
     public static final String TITLE = "Tetris";
     private Tetromino currentTetromino = new Tetromino();
@@ -86,17 +87,17 @@ public class TetrisJPanel
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        long nanos = System.nanoTime();
-        long currTime = nanos;
-        long nanosMove = nanos;
+        long nanosFall = System.nanoTime();
+        long currTime = nanosFall;
+        long nanosMove = nanosFall;
         mainLoop:
         while (true)
         {
             currTime = System.nanoTime();
-            int result = game.update(currTime - nanos, currTime - nanosMove);
+            int result = game.update(currTime - nanosFall, currTime - nanosMove);
             if ((result & 1) == 1)
             {
-                nanos = currTime;
+                nanosFall = currTime;
             }
             if ((result & 2) == 2)
             {
@@ -108,6 +109,16 @@ public class TetrisJPanel
             }
             game.repaint();
             Thread.sleep(10);
+        }
+        game.repaint();
+        for (int i = 0; i < 3; ++i)
+        {
+            TimeUnit.MILLISECONDS.sleep(500);
+            game.currentTetromino.setBlack(true);
+            game.repaint();
+            TimeUnit.MILLISECONDS.sleep(500);
+            game.currentTetromino.setBlack(false);
+            game.repaint();
         }
         System.out.println("Done");
     }

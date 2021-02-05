@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,13 +17,14 @@ import java.util.Map;
  */
 public class Tetromino
 {
-    
+
     private ShapeEnum shape;
     private int rotation;
     private int left;
     private int top;
     private final Cell colour;
-    
+    private boolean black;
+
     private static final String[][] S_SHAPE =
     {
         {
@@ -178,16 +180,16 @@ public class Tetromino
         }
     };
     private static final Map<ShapeEnum, String[][]> SHAPES_STRING;
-    
+
     static
     {
         Map<ShapeEnum, String[][]> aMap = getShapes();
         SHAPES_STRING = Collections.
                 unmodifiableMap(aMap);
     }
-    
+
     private static final Map<ShapeEnum, int[][][]> SHAPES_COORD;
-    
+
     static
     {
         Map<ShapeEnum, int[][][]> aMap = getShapesCoord(SHAPES_STRING);
@@ -198,17 +200,17 @@ public class Tetromino
     {
         return left;
     }
-    
+
     public int getTop()
     {
         return top;
     }
-    
+
     public int[][] getRelativeCoords()
     {
         return SHAPES_COORD.get(shape)[rotation];
     }
-    
+
     public Cell getCell()
     {
         return colour;
@@ -218,7 +220,7 @@ public class Tetromino
      * Colours the Tetromino may take.
      */
     static final Map<ShapeEnum, Cell> COLOURS;
-    
+
     static
     {
         Map<ShapeEnum, Cell> aMap = new HashMap<ShapeEnum, Cell>();
@@ -230,7 +232,9 @@ public class Tetromino
         aMap.put(ShapeEnum.T, Cell.PINK);
         aMap.put(ShapeEnum.Z, Cell.GREEN);
         COLOURS = Collections.unmodifiableMap(aMap);
-    };
+    }
+
+    ;
     
     private static HashMap<ShapeEnum, String[][]> getShapes()
     {
@@ -245,7 +249,7 @@ public class Tetromino
         shapes.put(ShapeEnum.T, T_SHAPE);
         return shapes;
     }
-    
+
     private static Map<ShapeEnum, int[][][]> getShapesCoord(
             Map<ShapeEnum, String[][]> stringShapes)
     {
@@ -281,18 +285,19 @@ public class Tetromino
         }
         return shapes;
     }
-    
+
     public Tetromino()
     {
+        black = false;
         shape = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
                 values().length - 1)];
-        
+
         rotation = 0;
         left = 2;
         top = -1;
         colour = COLOURS.get(shape);
     }
-    
+
     public boolean collides(Board board)
     {
         int[][] current = SHAPES_COORD.get(shape)[rotation];
@@ -384,10 +389,17 @@ public class Tetromino
         }
         return true;
     }
-    
+
     public void paint(Graphics2D g2d, int boardLeft, int boardTop, int cellSize)
     {
-        g2d.setColor(COLOURS.get(shape).getColour());
+        if (black)
+        {
+            g2d.setColor(Color.BLACK);
+        }
+        else
+        {
+            g2d.setColor(COLOURS.get(shape).getColour());
+        }
         int[][] coordsGroup = SHAPES_COORD.get(shape)[rotation];
         for (int[] coords : coordsGroup)
         {
@@ -396,7 +408,7 @@ public class Tetromino
                     cellSize / 3, cellSize / 3);
         }
     }
-    
+
     public static void main(String[] args)
     {
         for (ShapeEnum sh : SHAPES_COORD.keySet())
@@ -405,7 +417,7 @@ public class Tetromino
             for (int[][] rot : SHAPES_COORD.get(sh))
             {
                 System.out.println("\trot:");
-                for(int[] coords : rot)
+                for (int[] coords : rot)
                 {
                     System.out.println("\t\tcoords:");
                     System.out.println("\t\t\t" + coords[0]);
@@ -414,4 +426,10 @@ public class Tetromino
             }
         }
     }
+
+    public void setBlack(boolean black)
+    {
+        this.black = black;
+    }
+
 }
