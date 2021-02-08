@@ -23,7 +23,8 @@ public class Tetromino
     private int left;
     private int top;
     private final Cell colour;
-    private boolean black;
+    private boolean brighter;
+    private boolean transparent;
 
     private static final String[][] S_SHAPE =
     {
@@ -288,7 +289,8 @@ public class Tetromino
 
     public Tetromino()
     {
-        black = false;
+        transparent = false;
+        brighter = false;
         shape = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
                 values().length - 1)];
 
@@ -392,9 +394,13 @@ public class Tetromino
 
     public void paint(Graphics2D g2d, int boardLeft, int boardTop, int cellSize)
     {
-        if (black)
+        if (transparent)
         {
-            g2d.setColor(Color.BLACK);
+            return;
+        }
+        else if (brighter)
+        {
+            g2d.setColor(COLOURS.get(shape).getColour().darker().brighter());
         }
         else
         {
@@ -427,9 +433,14 @@ public class Tetromino
         }
     }
 
-    public void setBlack(boolean black)
+    public void setBrighter(boolean brighter)
     {
-        this.black = black;
+        this.brighter = brighter;
+    }
+
+    public void setTransparent(boolean transparent)
+    {
+        this.transparent = transparent;
     }
 
 }

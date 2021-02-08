@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.Board;
+import model.DifficultyEnum;
 import model.Tetromino;
 
 @SuppressWarnings("serial")
@@ -24,14 +25,16 @@ public class TetrisJPanel
     final int BOARD_WIDTH = 10;
     final int BOARD_HEIGHT = 20;
     final int CELL_SIZE = 40;
-    long clockNanoUpdate = 250000000;
+    long clockNanoFall = 250000000;
     long clockNanoMove = 80000000;
     public static final String TITLE = "Tetris";
     private Tetromino currentTetromino = new Tetromino();
     final Board board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
-    private boolean fallFast = true;
-    private boolean moveLeft = false;
-    private boolean moveRight = false;
+    private boolean rotateRight = false;
+    private boolean left = false;
+    private boolean right = false;
+    private boolean rotateLeft = false;
+    private boolean fallFast = false;
 
     public TetrisJPanel()
     {
@@ -40,10 +43,62 @@ public class TetrisJPanel
         setFocusable(true);
     }
 
-    private int update(long nanosUpdate, long nanosMove)
+    public class MyKeyListener
+            implements KeyListener
+    {
+
+        @Override
+        public void keyTyped(KeyEvent e)
+        {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e)
+        {
+            int keyCode = e.getKeyCode();
+            switch (keyCode)
+            {
+                case KeyEvent.VK_UP:
+                    rotateRight = true;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    fallFast = true;
+                    break;
+                case KeyEvent.VK_LEFT:
+                    left = true;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    right = true;
+                    break;
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e)
+        {
+            int keyCode = e.getKeyCode();
+            switch (keyCode)
+            {
+                case KeyEvent.VK_UP:
+                    rotateRight = false;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    fallFast = false;
+                    break;
+                case KeyEvent.VK_LEFT:
+                    left = false;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    right = false;
+                    break;
+            }
+        }
+    }
+
+    private int update(long nanosFall, long nanosMove)
     {
         int ret = 0;
-        if (nanosUpdate > clockNanoUpdate)
+        if (nanosFall > clockNanoFall || fallFast && nanosFall > clockNanoMove)
         {
             if (!currentTetromino.fall(board))
             {
@@ -56,10 +111,20 @@ public class TetrisJPanel
             }
             ret += 1;
         }
-        if (nanosMove > clockNanoMove && (moveRight ^ moveLeft))
+        if (nanosMove > clockNanoMove && (left ^ right))
         {
-            currentTetromino.move(board, moveRight);
+            currentTetromino.move(board, right);
             ret += 2;
+        }
+        if (rotateRight)
+        {
+            currentTetromino.rotate(board, true);
+            rotateRight = false;
+        }
+        if (rotateLeft)
+        {
+            currentTetromino.rotate(board, false);
+            rotateLeft = false;
         }
         return ret;
     }
@@ -90,7 +155,6 @@ public class TetrisJPanel
         long nanosFall = System.nanoTime();
         long currTime = nanosFall;
         long nanosMove = nanosFall;
-        mainLoop:
         while (true)
         {
             currTime = System.nanoTime();
@@ -105,70 +169,23 @@ public class TetrisJPanel
             }
             else if (result == 4)
             {
-                break mainLoop;
+                break;
             }
             game.repaint();
-            Thread.sleep(10);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
+        game.currentTetromino.setBrighter(true);
         game.repaint();
         for (int i = 0; i < 3; ++i)
         {
             TimeUnit.MILLISECONDS.sleep(500);
-            game.currentTetromino.setBlack(true);
+            game.currentTetromino.setTransparent(true);
             game.repaint();
             TimeUnit.MILLISECONDS.sleep(500);
-            game.currentTetromino.setBlack(false);
+            game.currentTetromino.setTransparent(false);
             game.repaint();
         }
         System.out.println("Done");
     }
 
-    public class MyKeyListener
-            implements KeyListener
-    {
-
-        @Override
-        public void keyTyped(KeyEvent e)
-        {
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e)
-        {
-            int keyCode = e.getKeyCode();
-            switch (keyCode)
-            {
-                case KeyEvent.VK_UP:
-                    currentTetromino.rotate(board, true);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    fallFast = true;
-                    break;
-                case KeyEvent.VK_LEFT:
-                    moveLeft = true;
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    moveRight = true;
-                    break;
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e)
-        {
-            int keyCode = e.getKeyCode();
-            switch (keyCode)
-            {
-                case KeyEvent.VK_DOWN:
-                    fallFast = false;
-                    break;
-                case KeyEvent.VK_LEFT:
-                    moveLeft = false;
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    moveRight = false;
-                    break;
-            }
-        }
-    }
 }
