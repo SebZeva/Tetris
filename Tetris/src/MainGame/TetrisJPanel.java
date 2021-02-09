@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.Board;
-import model.DifficultyEnum;
 import model.Tetromino;
 
 @SuppressWarnings("serial")
@@ -25,16 +24,23 @@ public class TetrisJPanel
     final int BOARD_WIDTH = 10;
     final int BOARD_HEIGHT = 20;
     final int CELL_SIZE = 40;
-    long clockNanoFall = 250000000;
-    long clockNanoMove = 80000000;
+    long clockFall = 250000000;
+    long clockMove = 80000000;
+    long clockFallFast = 40000000;
     public static final String TITLE = "Tetris";
     private Tetromino currentTetromino = new Tetromino();
     final Board board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
-    private boolean rotateRight = false;
     private boolean left = false;
     private boolean right = false;
+    private boolean leftL = false;
+    private boolean rightL = false;
     private boolean rotateLeft = false;
+    private boolean rotateLeftL = false;
+    private boolean rotateRight = false;
+    private boolean rotateRightL = false;
     private boolean fallFast = false;
+    private boolean fallFastL = false;
+    private boolean ignoreFallFast = false;
 
     public TetrisJPanel()
     {
@@ -58,17 +64,34 @@ public class TetrisJPanel
             int keyCode = e.getKeyCode();
             switch (keyCode)
             {
-                case KeyEvent.VK_UP:
+                case KeyEvent.VK_INSERT:
+                case KeyEvent.VK_0:
                     rotateRight = true;
+                case KeyEvent.VK_E:
+                    rotateRightL = true;
                     break;
-                case KeyEvent.VK_DOWN:
-                    fallFast = true;
+                case KeyEvent.VK_UP:
+                    rotateLeft = true;
+                case KeyEvent.VK_R:
+                    rotateLeftL = true;
                     break;
                 case KeyEvent.VK_LEFT:
                     left = true;
                     break;
                 case KeyEvent.VK_RIGHT:
                     right = true;
+                    break;
+                case KeyEvent.VK_D:
+                    leftL = true;
+                    break;
+                case KeyEvent.VK_F:
+                    rightL = true;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    fallFast = true;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    fallFastL = true;
                     break;
             }
         }
@@ -79,17 +102,25 @@ public class TetrisJPanel
             int keyCode = e.getKeyCode();
             switch (keyCode)
             {
-                case KeyEvent.VK_UP:
-                    rotateRight = false;
-                    break;
-                case KeyEvent.VK_DOWN:
-                    fallFast = false;
-                    break;
                 case KeyEvent.VK_LEFT:
                     left = false;
                     break;
                 case KeyEvent.VK_RIGHT:
                     right = false;
+                    break;
+                case KeyEvent.VK_D:
+                    leftL = false;
+                    break;
+                case KeyEvent.VK_F:
+                    rightL = false;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    fallFast = false;
+                    ignoreFallFast = false;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    fallFastL = false;
+                    ignoreFallFast = false;
                     break;
             }
         }
@@ -97,8 +128,12 @@ public class TetrisJPanel
 
     private int update(long nanosFall, long nanosMove)
     {
+        boolean localLeft = left || leftL;
+        boolean localRight = right || rightL;
+        boolean localFallFast = !ignoreFallFast && (fallFast || fallFastL);
         int ret = 0;
-        if (nanosFall > clockNanoFall || fallFast && nanosFall > clockNanoMove)
+        if (localFallFast && nanosFall > clockFallFast ||
+                nanosFall > clockFall)
         {
             if (!currentTetromino.fall(board))
             {
@@ -108,23 +143,26 @@ public class TetrisJPanel
                 {
                     return 4;
                 }
+                ignoreFallFast = true;
             }
-            ret += 1;
+            ret |= 1;
         }
-        if (nanosMove > clockNanoMove && (left ^ right))
+        if (nanosMove > clockMove && (localLeft != localRight))
         {
-            currentTetromino.move(board, right);
-            ret += 2;
+            currentTetromino.move(board, localRight);
+            ret |= 2;
         }
-        if (rotateRight)
+        if (rotateRight || rotateRightL)
         {
             currentTetromino.rotate(board, true);
             rotateRight = false;
+            rotateRightL = false;
         }
-        if (rotateLeft)
+        if (rotateLeft || rotateLeftL)
         {
             currentTetromino.rotate(board, false);
             rotateLeft = false;
+            rotateLeftL = false;
         }
         return ret;
     }
@@ -152,8 +190,8 @@ public class TetrisJPanel
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        long currTime;
         long nanosFall = System.nanoTime();
-        long currTime = nanosFall;
         long nanosMove = nanosFall;
         while (true)
         {
@@ -176,13 +214,11 @@ public class TetrisJPanel
         }
         game.currentTetromino.setBrighter(true);
         game.repaint();
-        for (int i = 0; i < 3; ++i)
+        boolean transp = false;
+        for (int i = 0; i < 6; ++i)
         {
             TimeUnit.MILLISECONDS.sleep(500);
-            game.currentTetromino.setTransparent(true);
-            game.repaint();
-            TimeUnit.MILLISECONDS.sleep(500);
-            game.currentTetromino.setTransparent(false);
+            game.currentTetromino.setTransparent(transp ^= true);
             game.repaint();
         }
         System.out.println("Done");

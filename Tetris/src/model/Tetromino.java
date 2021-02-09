@@ -37,9 +37,9 @@ public class Tetromino
         },
         {
             ".....",
+            ".0...",
+            ".00..",
             "..0..",
-            "..00.",
-            "...0.",
             "....."
         }
     };
@@ -73,7 +73,7 @@ public class Tetromino
             ".....",
             ".....",
             ".....",
-            "0000.",
+            ".0000",
             "....."
         }
     };
@@ -369,11 +369,11 @@ public class Tetromino
         int delta;
         if (right)
         {
-            delta = -1;
+            delta = 1;
         }
         else
         {
-            delta = 1;
+            delta = -1;
         }
         rotation = (rotation + delta + 4) % SHAPES_COORD.get(shape).length;
         if (collides(board))
