@@ -6,8 +6,6 @@
 package model;
 
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,25 +19,33 @@ public class Board
     private final int WIDTH;
     private final int HEIGHT;
     private final Cell[][] cells;
+    public Tetromino currentTetromino;
+    private int left;
+    private int top;
 
     /**
      * Constructor for board.
      *
      * @param width horizontal length of the board in cells.
      * @param height vertical length of the board in cells.
+     * @param left distance to left of the screen.
+     * @param top distance to top of the screen.
      */
-    public Board(int width, int height)
+    public Board(int width, int height, int left, int top)
     {
+        this.left = left;
+        this.top = top;
         this.WIDTH = width;
         this.HEIGHT = height;
         cells = new Cell[width][height];
-        for (int top = 0; top < height; top++)
+        for (int j = 0; j < height; j++)
         {
-            for (int left = 0; left < width; left++)
+            for (int i = 0; i < width; i++)
             {
-                cells[left][top] = Cell.BLACK;
+                cells[i][j] = Cell.BLACK;
             }
         }
+        currentTetromino = new Tetromino();
     }
 
     /**
@@ -78,18 +84,18 @@ public class Board
         return cells[left][top].isEmpty();
     }
 
-    public void fuse(Tetromino t)
+    public boolean fuse()
     {
-        Set<Integer> yCoords = new TreeSet<Integer>();
+        Set<Integer> yCoords = new TreeSet<>();
         int[] coords =
         {
-            t.getLeft(), t.getTop()
+            currentTetromino.getLeft(), currentTetromino.getTop()
         };
-        int[][] someRelCoords = t.getRelativeCoords();
+        int[][] someRelCoords = currentTetromino.getRelativeCoords();
         for (int[] relCoords : someRelCoords)
         {
-            cells[coords[0] + relCoords[0]][coords[1] + relCoords[1]] = t.
-                    getCell();
+            cells[coords[0] + relCoords[0]][coords[1] + relCoords[1]] =
+                    currentTetromino.getCell();
             yCoords.add(coords[1] + relCoords[1]);
         }
         yFor:
@@ -110,9 +116,16 @@ public class Board
                 }
             }
         }
+        currentTetromino = new Tetromino();
+        return !currentTetromino.collides(this);
+    }
+    
+    public boolean fall()
+    {
+        return currentTetromino.fall(this);
     }
 
-    public void paint(Graphics2D g2d, int left, int top, int cellSize)
+    public void paint(Graphics2D g2d, int cellSize)
     {
         for (int x = 0; x < cells.length; ++x)
         {
@@ -124,5 +137,6 @@ public class Board
 
             }
         }
+        currentTetromino.paint(g2d, left, top, cellSize);
     }
 }

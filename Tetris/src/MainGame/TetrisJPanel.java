@@ -10,40 +10,38 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.Board;
-import model.Tetromino;
 
 @SuppressWarnings("serial")
 public class TetrisJPanel
         extends JPanel
 {
-
-    final int BOARD_TOP = 50;
-    final int BOARD_LEFT = 600;
-    final int CANVAS_WIDTH = 1600;
-    final int CANVAS_HEIGHT = 900;
-    final int BOARD_WIDTH = 10;
-    final int BOARD_HEIGHT = 20;
-    final int CELL_SIZE = 40;
+    public static final int CANVAS_WIDTH = 1600;
+    public static final int CANVAS_HEIGHT = 900;
+    private int cellSize;
     long clockFall = 250000000;
     long clockMove = 80000000;
     long clockFallFast = 40000000;
-    public static final String TITLE = "Tetris";
-    private Tetromino currentTetromino = new Tetromino();
-    final Board board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
-    private boolean left = false;
-    private boolean right = false;
-    private boolean leftL = false;
-    private boolean rightL = false;
-    private boolean rotateLeft = false;
-    private boolean rotateLeftL = false;
-    private boolean rotateRight = false;
-    private boolean rotateRightL = false;
-    private boolean fallFast = false;
-    private boolean fallFastL = false;
-    private boolean ignoreFallFast = false;
+    final Board board;
+    boolean left = false;
+    boolean right = false;
+    boolean leftL = false;
+    boolean rightL = false;
+    boolean rotateLeft = false;
+    boolean rotateLeftL = false;
+    boolean rotateRight = false;
+    boolean rotateRightL = false;
+    boolean fallFast = false;
+    boolean fallFastL = false;
+    boolean ignoreFallFast = false;
 
     public TetrisJPanel()
     {
+        cellSize = 40;
+        final int BOARD_TOP = 50;
+        final int BOARD_LEFT = 600;
+        final int BOARD_WIDTH = 10;
+        final int BOARD_HEIGHT = 20;
+        board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
         KeyListener listener = new MyKeyListener();
         addKeyListener(listener);
         setFocusable(true);
@@ -135,32 +133,33 @@ public class TetrisJPanel
         if (localFallFast && nanosFall > clockFallFast ||
                 nanosFall > clockFall)
         {
-            if (!currentTetromino.fall(board))
+            if (!board.fall())
             {
-                board.fuse(currentTetromino);
-                currentTetromino = new Tetromino();
-                if (currentTetromino.collides(board))
+                if (!board.fuse())
                 {
                     return 4;
                 }
-                ignoreFallFast = true;
+                if (fallFast || fallFastL)
+                {
+                    ignoreFallFast = true;
+                }
             }
             ret |= 1;
         }
         if (nanosMove > clockMove && (localLeft != localRight))
         {
-            currentTetromino.move(board, localRight);
+            board.currentTetromino.move(board, localRight);
             ret |= 2;
         }
         if (rotateRight || rotateRightL)
         {
-            currentTetromino.rotate(board, true);
+            board.currentTetromino.rotate(board, true);
             rotateRight = false;
             rotateRightL = false;
         }
         if (rotateLeft || rotateLeftL)
         {
-            currentTetromino.rotate(board, false);
+            board.currentTetromino.rotate(board, false);
             rotateLeft = false;
             rotateLeftL = false;
         }
@@ -176,17 +175,17 @@ public class TetrisJPanel
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        board.paint(g2d, BOARD_LEFT, BOARD_TOP, CELL_SIZE);
-        currentTetromino.paint(g2d, BOARD_LEFT, BOARD_TOP, CELL_SIZE);
+        board.paint(g2d, cellSize);
     }
 
     public static void main(String[] args)
             throws InterruptedException
     {
+        final String TITLE = "Tetris";
         JFrame frame = new JFrame(TITLE);
         TetrisJPanel game = new TetrisJPanel();
         frame.add(game);
-        frame.setSize(game.CANVAS_WIDTH, game.CANVAS_HEIGHT);
+        frame.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -212,13 +211,12 @@ public class TetrisJPanel
             game.repaint();
             TimeUnit.MILLISECONDS.sleep(10);
         }
-        game.currentTetromino.setBrighter(true);
         game.repaint();
         boolean transp = false;
         for (int i = 0; i < 6; ++i)
         {
             TimeUnit.MILLISECONDS.sleep(500);
-            game.currentTetromino.setTransparent(transp ^= true);
+            game.board.currentTetromino.setTransparent(transp ^= true);
             game.repaint();
         }
         System.out.println("Done");

@@ -23,23 +23,22 @@ public class Tetromino
     private int left;
     private int top;
     private final Cell colour;
-    private boolean brighter;
     private boolean transparent;
 
     private static final String[][] S_SHAPE =
     {
         {
             ".....",
-            ".....",
-            "..00.",
+            "..00",
             ".00..",
+            ".....",
             "....."
         },
         {
             ".....",
-            ".0...",
-            ".00..",
             "..0..",
+            "..00.",
+            "...0.",
             "....."
         }
     };
@@ -47,16 +46,16 @@ public class Tetromino
     {
         {
             ".....",
-            ".....",
             ".00..",
             "..00.",
+            ".....",
             "....."
         },
         {
             ".....",
+            "...0.",
+            "..00",
             "..0..",
-            ".00..",
-            ".0...",
             "....."
         }
     };
@@ -81,8 +80,8 @@ public class Tetromino
     {
         {
             ".....",
-            ".00..",
-            ".00..",
+            "..00.",
+            "..00.",
             ".....",
             "....."
         }
@@ -290,7 +289,6 @@ public class Tetromino
     public Tetromino()
     {
         transparent = false;
-        brighter = false;
         shape = ShapeEnum.values()[Random.randomInt(0, ShapeEnum.
                 values().length - 1)];
 
@@ -398,10 +396,6 @@ public class Tetromino
         {
             return;
         }
-        else if (brighter)
-        {
-            g2d.setColor(COLOURS.get(shape).getColour().darker().brighter());
-        }
         else
         {
             g2d.setColor(COLOURS.get(shape).getColour());
@@ -431,11 +425,6 @@ public class Tetromino
                 }
             }
         }
-    }
-
-    public void setBrighter(boolean brighter)
-    {
-        this.brighter = brighter;
     }
 
     public void setTransparent(boolean transparent)
