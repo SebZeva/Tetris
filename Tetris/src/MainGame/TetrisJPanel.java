@@ -43,8 +43,8 @@ public class TetrisJPanel
         final int BOARD_HEIGHT = 20;
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
         KeyListener listener = new MyKeyListener();
-        addKeyListener(listener);
-        setFocusable(true);
+        super.addKeyListener(listener);
+        super.setFocusable(true);
     }
 
     public class MyKeyListener

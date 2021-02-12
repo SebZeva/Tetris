@@ -14,34 +14,48 @@ import model.Board;
 public enum UpdaterFuncEnum
 {
     FALL,
-    FALLFAST,
+    FALL_FAST,
     MOVE;
 
-    public void update(TetrisJPanel game)
+    public boolean update(Board board)
     {
         switch (this)
         {
-
-        }
-    }
-
-    private static boolean fall(TetrisJPanel game)
-    {
-        return game.board.fall() || game.board.fuse();
-    }
-
-    private static boolean fallFast(TetrisJPanel game)
-    {
-        if (!game.board.fall())
-        {
-            game.ignoreFallFast = true;
-            return game.board.fuse();
+            case FALL:
+                return fall(board);
+            case FALL_FAST:
+                return !board.fallFast || fallFast(board);
+            case MOVE:
+                return move(board);
         }
         return false;
     }
-    
-    private static boolean move(TetrisJPanel game)
+
+    private static boolean fall(Board board)
     {
-        
+        return board.fall() || board.fuse();
+    }
+
+    private static boolean fallFast(Board board)
+    {
+        if (!board.fall())
+        {
+            board.ignoreFallFast = true;
+            if (!board.fallFast)
+            {
+                board.ignoreFallFast = false;
+            }
+            return board.fuse();
+        }
+        return true;
+    }
+
+    private static boolean move(Board board)
+    {
+        if (board.moveLeft ^ board.moveRight)
+        {
+            board.move(board.moveRight);
+        }
+        return true;
     }
 }

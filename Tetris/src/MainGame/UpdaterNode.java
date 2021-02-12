@@ -5,11 +5,42 @@
  */
 package MainGame;
 
+import model.Board;
+
 /**
  *
  * @author SebZeva
  */
-public final class UpdaterNode
+public final class UpdaterNode implements Comparable<UpdaterNode>
 {
-    
+
+    private final UpdaterFuncEnum action;
+    private final long time;
+
+    public UpdaterNode(UpdaterFuncEnum action, long time)
+    {
+        this.action = action;
+        this.time = time;
+    }
+
+    public long getTime()
+    {
+        return time;
+    }
+
+    public UpdaterFuncEnum getAction()
+    {
+        return action;
+    }
+
+    public boolean run(Board board)
+    {
+        return action.update(board);
+    }
+
+    @Override
+    public int compareTo(UpdaterNode o)
+    {
+        return time < o.time ? -1 : (time == o.time ? 0 : 1);
+    }
 }

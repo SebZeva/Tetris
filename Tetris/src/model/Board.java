@@ -22,6 +22,12 @@ public class Board
     public Tetromino currentTetromino;
     private int left;
     private int top;
+    public boolean moveLeft = false;
+    public boolean moveRight = false;
+    public boolean rotateLeft = false;
+    public boolean rotateRight = false;
+    public boolean fallFast = false;
+    public boolean ignoreFallFast = false;
 
     /**
      * Constructor for board.
@@ -123,6 +129,11 @@ public class Board
     public boolean fall()
     {
         return currentTetromino.fall(this);
+    }
+    
+    public boolean move(boolean right)
+    {
+        return currentTetromino.move(this, right);
     }
 
     public void paint(Graphics2D g2d, int cellSize)
