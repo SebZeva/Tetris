@@ -15,6 +15,7 @@ public enum UpdaterFuncEnum
 {
     FALL,
     FALL_FAST,
+    ROTATE,
     MOVE;
 
     public boolean update(Board board)
@@ -24,9 +25,14 @@ public enum UpdaterFuncEnum
             case FALL:
                 return fall(board);
             case FALL_FAST:
-                return !board.fallFast || fallFast(board);
+            // do fallFast if (board.fallFast AND NOT board.ignoreFallFast)
+                return !board.fallFast || board.ignoreFallFast ||
+                        fallFast(board);
             case MOVE:
                 return move(board);
+            case ROTATE:
+                return rotate(board);
+
         }
         return false;
     }
@@ -55,6 +61,23 @@ public enum UpdaterFuncEnum
         if (board.moveLeft ^ board.moveRight)
         {
             board.move(board.moveRight);
+        }
+        return true;
+    }
+
+    private static boolean rotate(Board board)
+    {
+        if (board.rotateLeft ^ board.rotateRight)
+        {
+            board.rotate(board.rotateRight);
+        }
+        if (board.rotateRight)
+        {
+            board.rotateRight = false;
+        }
+        if (board.rotateLeft)
+        {
+            board.rotateLeft = false;
         }
         return true;
     }

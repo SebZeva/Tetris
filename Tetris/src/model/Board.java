@@ -20,8 +20,8 @@ public class Board
     private final int HEIGHT;
     private final Cell[][] cells;
     public Tetromino currentTetromino;
-    private int left;
-    private int top;
+    public int left;
+    public int top;
     public boolean moveLeft = false;
     public boolean moveRight = false;
     public boolean rotateLeft = false;
@@ -134,6 +134,11 @@ public class Board
     public boolean move(boolean right)
     {
         return currentTetromino.move(this, right);
+    }
+    
+    public boolean rotate(boolean right)
+    {
+        return currentTetromino.rotate(this, right);
     }
 
     public void paint(Graphics2D g2d, int cellSize)

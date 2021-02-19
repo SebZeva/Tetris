@@ -1,5 +1,6 @@
-package MainGame;
+package TwoPlayers;
 
+import MainGame.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,7 +13,7 @@ import javax.swing.JPanel;
 import model.Board;
 
 @SuppressWarnings("serial")
-public class TetrisJPanel
+public class TetrisJPanel2P
         extends JPanel
 {
 
@@ -22,7 +23,7 @@ public class TetrisJPanel
     private final Board board;
     private final BoardUpdater bu;
 
-    public TetrisJPanel()
+    public TetrisJPanel2P()
     {
         bu = new BoardUpdater();
         final int BOARD_TOP = 0;
@@ -105,7 +106,7 @@ public class TetrisJPanel
     {
         final String TITLE = "Tetris";
         JFrame frame = new JFrame(TITLE);
-        TetrisJPanel game = new TetrisJPanel();
+        TetrisJPanel2P game = new TetrisJPanel2P();
         frame.add(game);
         frame.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         frame.setVisible(true);
