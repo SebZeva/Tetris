@@ -16,7 +16,7 @@ public class TetrisJPanel
         extends JPanel
 {
 
-    public static final int CANVAS_WIDTH = 416;
+    public static final int CANVAS_WIDTH = 916;
     public static final int CANVAS_HEIGHT = 840;
     private final int cellSize = 40;
     private final Board board;
@@ -26,7 +26,7 @@ public class TetrisJPanel
     {
         bu = new BoardUpdater();
         final int BOARD_TOP = 0;
-        final int BOARD_LEFT = 0;
+        final int BOARD_LEFT = 250;
         final int BOARD_WIDTH = 10;
         final int BOARD_HEIGHT = 20;
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
