@@ -20,7 +20,8 @@ public enum Cell
     CYAN(Color.CYAN),
     ORANGE(Color.ORANGE),
     PINK(Color.PINK),
-    BLACK(Color.BLACK);
+    BLACK(Color.BLACK),
+    WHITE(Color.WHITE);
 
     private Color colour;
 

@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainGame;
+package TwoPlayers;
 
+import MainGame.UpdaterFuncEnum;
+import MainGame.UpdaterNode;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Board;
 
-public class BoardUpdater
+public class TwoBoardUpdater
 {
 
     private final Queue<UpdaterNode> pq;
@@ -21,28 +23,32 @@ public class BoardUpdater
     public long clockFallFast = 50000000;
     public long clockRotate = 40000000;
 
-    public BoardUpdater()
+    public TwoBoardUpdater()
     {
         long time = System.nanoTime();
 
         pq = new PriorityQueue<>(3);
-        pq.
-                add(new UpdaterNode(UpdaterFuncEnum.FALL_FAST, time +=
+        pq.add(new UpdaterNode(UpdaterFuncEnum.FALL_FAST, time +=
                         clockFallFast));
         pq.add(new UpdaterNode(UpdaterFuncEnum.FALL, time += clockFall));
         pq.add(new UpdaterNode(UpdaterFuncEnum.MOVE, time += clockMove));
         pq.add(new UpdaterNode(UpdaterFuncEnum.ROTATE, time += clockRotate));
     }
 
-    public boolean update(Board board)
+    public byte update(Board board1, Board board2)
     {
         UpdaterNode un = pq.remove();
         UpdaterFuncEnum act = un.getAction();
+        byte ret = 0;
         long extraTime;
         switch (act)
         {
             case FALL:
                 extraTime = clockFall;
+                board1.recieve(board2.toSend);
+                board2.toSend = 0;
+                board2.recieve(board1.toSend);
+                board1.toSend = 0;
                 break;
             case FALL_FAST:
                 extraTime = clockFallFast;
@@ -65,9 +71,18 @@ public class BoardUpdater
         }
         catch (InterruptedException ex)
         {
-            Logger.getLogger(BoardUpdater.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(TwoBoardUpdater.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
-        return act.update(board);
+        if (!act.update(board1))
+        {
+            ret += 1;
+        }
+        if (!act.update(board2))
+        {
+            ret += 2;
+        }
+        return ret;
     }
 }
+

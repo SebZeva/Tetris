@@ -28,6 +28,7 @@ public class Board
     public boolean rotateRight = false;
     public boolean fallFast = false;
     public boolean ignoreFallFast = false;
+    public long toSend = 0;
 
     /**
      * Constructor for board.
@@ -104,6 +105,7 @@ public class Board
                     currentTetromino.getCell();
             yCoords.add(coords[1] + relCoords[1]);
         }
+        int count = 0;
         yFor:
         for (Integer yCoord : yCoords)
         {
@@ -114,6 +116,7 @@ public class Board
                     continue yFor;
                 }
             }
+            count += 1;
             for (int j = yCoord; j > 0; --j)
             {
                 for (int i = 0; i < WIDTH; ++i)
@@ -122,20 +125,21 @@ public class Board
                 }
             }
         }
+        toSend += count / 2;
         currentTetromino = new Tetromino();
         return !currentTetromino.collides(this);
     }
-    
+
     public boolean fall()
     {
         return currentTetromino.fall(this);
     }
-    
+
     public boolean move(boolean right)
     {
         return currentTetromino.move(this, right);
     }
-    
+
     public boolean rotate(boolean right)
     {
         return currentTetromino.rotate(this, right);
@@ -154,5 +158,28 @@ public class Board
             }
         }
         currentTetromino.paint(g2d, left, top, cellSize);
+    }
+
+    public void recieve(long amount)
+    {
+        int pos;
+        for (int time = 0; time < amount; ++time)
+        {
+            int j;
+            pos = Random.randomInt(0, WIDTH - 1);
+            for (j = 1; j < HEIGHT; ++j)
+            {
+                for (int i = 0; i < WIDTH; ++i)
+                {
+                    cells[i][j - 1] = cells[i][j];
+                }
+            }
+            j = HEIGHT - 1;
+            for (int i = 0; i < WIDTH; ++i)
+            {
+                cells[i][j] = Cell.WHITE;
+            }
+            cells[pos][j] = Cell.BLACK;
+        }
     }
 }

@@ -1,6 +1,5 @@
 package TwoPlayers;
 
-import MainGame.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,20 +16,26 @@ public class TetrisJPanel2P
         extends JPanel
 {
 
-    public static final int CANVAS_WIDTH = 416;
+    public static final int CANVAS_WIDTH = 916;
     public static final int CANVAS_HEIGHT = 840;
     private final int cellSize = 40;
-    private final Board board;
-    private final BoardUpdater bu;
+    private final Board board1;
+    private final Board board2;
+    private final TwoBoardUpdater bu;
 
     public TetrisJPanel2P()
     {
-        bu = new BoardUpdater();
+        bu = new TwoBoardUpdater();
         final int BOARD_TOP = 0;
         final int BOARD_LEFT = 0;
         final int BOARD_WIDTH = 10;
         final int BOARD_HEIGHT = 20;
-        board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
+        final int BOARD2_TOP = 0;
+        final int BOARD2_LEFT = 500;
+        final int BOARD2_WIDTH = 10;
+        final int BOARD2_HEIGHT = 20;
+        board1 = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
+        board2 = new Board(BOARD2_WIDTH, BOARD2_HEIGHT, BOARD2_LEFT, BOARD2_TOP);
         KeyListener listener = new MyKeyListener();
         super.addKeyListener(listener);
         super.setFocusable(true);
@@ -52,19 +57,34 @@ public class TetrisJPanel2P
             switch (keyCode)
             {
                 case KeyEvent.VK_NUMPAD0:
-                    board.rotateRight = true;
+                    board2.rotateRight = true;
                     break;
                 case KeyEvent.VK_UP:
-                    board.rotateLeft = true;
+                    board2.rotateLeft = true;
                     break;
                 case KeyEvent.VK_LEFT:
-                    board.moveLeft = true;
+                    board2.moveLeft = true;
                     break;
                 case KeyEvent.VK_RIGHT:
-                    board.moveRight = true;
+                    board2.moveRight = true;
                     break;
                 case KeyEvent.VK_DOWN:
-                    board.fallFast = true;
+                    board2.fallFast = true;
+                    break;
+                case KeyEvent.VK_W:
+                    board1.rotateRight = true;
+                    break;
+                case KeyEvent.VK_SHIFT:
+                    board1.rotateLeft = true;
+                    break;
+                case KeyEvent.VK_A:
+                    board1.moveLeft = true;
+                    break;
+                case KeyEvent.VK_D:
+                    board1.moveRight = true;
+                    break;
+                case KeyEvent.VK_S:
+                    board1.fallFast = true;
                     break;
             }
         }
@@ -76,14 +96,24 @@ public class TetrisJPanel2P
             switch (keyCode)
             {
                 case KeyEvent.VK_LEFT:
-                    board.moveLeft = false;
+                    board2.moveLeft = false;
                     break;
                 case KeyEvent.VK_RIGHT:
-                    board.moveRight = false;
+                    board2.moveRight = false;
                     break;
                 case KeyEvent.VK_DOWN:
-                    board.fallFast = false;
-                    board.ignoreFallFast = false;
+                    board2.fallFast = false;
+                    board2.ignoreFallFast = false;
+                    break;
+                case KeyEvent.VK_A:
+                    board1.moveLeft = false;
+                    break;
+                case KeyEvent.VK_D:
+                    board1.moveRight = false;
+                    break;
+                case KeyEvent.VK_S:
+                    board1.fallFast = false;
+                    board1.ignoreFallFast = false;
                     break;
             }
         }
@@ -98,7 +128,8 @@ public class TetrisJPanel2P
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        board.paint(g2d, cellSize);
+        board1.paint(g2d, cellSize);
+        board2.paint(g2d, cellSize);
     }
 
     public static void main(String[] args)
@@ -111,23 +142,48 @@ public class TetrisJPanel2P
         frame.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        byte loserData;
 
+        mainLoop:
         while (true)
         {
-            if (!game.bu.update(game.board))
+            loserData = game.bu.update(game.board1, game.board2);
+            switch (loserData)
             {
-                break;
+                case 0:
+                    break;
+                default:
+                    break mainLoop;
             }
             game.repaint();
-            TimeUnit.MILLISECONDS.sleep(10);
         }
         game.repaint();
         boolean transp = false;
-        for (int i = 0; i < 6; ++i)
         {
-            TimeUnit.MILLISECONDS.sleep(500);
-            game.board.currentTetromino.setTransparent(transp ^= true);
-            game.repaint();
+            for (int i = 0; i < 6; ++i)
+            {
+                TimeUnit.MILLISECONDS.sleep(500);
+                switch (loserData)
+                {
+                    case 1:
+                        game.board1.currentTetromino.setTransparent(transp ^=
+                                true);
+                        break;
+                    case 3:
+                        game.board1.currentTetromino.setTransparent(transp ^=
+                                true);
+                        game.board2.currentTetromino.setTransparent(transp);
+                        break;
+                    case 2:
+                        game.board2.currentTetromino.setTransparent(transp ^=
+                                true);
+                        break;
+                    case 0:
+                        System.out.println("Error");
+                        break;
+                }
+                game.repaint();
+            }
         }
         System.out.println("Done");
     }
