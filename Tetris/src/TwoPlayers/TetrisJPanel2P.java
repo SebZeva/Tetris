@@ -142,6 +142,9 @@ public class TetrisJPanel2P
         frame.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        run(game);
+    }
+    public static void run(TetrisJPanel2P game) throws InterruptedException {
         byte loserData;
 
         mainLoop:
@@ -187,5 +190,4 @@ public class TetrisJPanel2P
         }
         System.out.println("Done");
     }
-
 }

@@ -111,6 +111,12 @@ public class TetrisJPanel
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        run(game);
+    }
+    
+    public static void run(TetrisJPanel game) throws InterruptedException
+    {
+        
         while (true)
         {
             if (!game.bu.update(game.board))
@@ -129,6 +135,6 @@ public class TetrisJPanel
             game.repaint();
         }
         System.out.println("Done");
-    }
 
+    }
 }
