@@ -1,6 +1,8 @@
 package TwoPlayers;
 
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -19,11 +21,31 @@ public class TetrisJPanel2P
     public static final int CANVAS_WIDTH = 916;
     public static final int CANVAS_HEIGHT = 840;
     private final int cellSize = 40;
-    private final Board board1;
-    private final Board board2;
-    private final TwoBoardUpdater bu;
+    private Board board1;
+    private Board board2;
+    private TwoBoardUpdater bu;
+    byte loserData;
 
     public TetrisJPanel2P()
+    {
+        loserData = 0;
+        bu = new TwoBoardUpdater();
+        final int BOARD_TOP = 0;
+        final int BOARD_LEFT = 0;
+        final int BOARD_WIDTH = 10;
+        final int BOARD_HEIGHT = 20;
+        final int BOARD2_TOP = 0;
+        final int BOARD2_LEFT = 500;
+        final int BOARD2_WIDTH = 10;
+        final int BOARD2_HEIGHT = 20;
+        board1 = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
+        board2 = new Board(BOARD2_WIDTH, BOARD2_HEIGHT, BOARD2_LEFT, BOARD2_TOP);
+        KeyListener listener = new MyKeyListener();
+        super.addKeyListener(listener);
+        super.setFocusable(true);
+    }
+
+    public TetrisJPanel2P(CardLayout cl, JPanel cards)
     {
         bu = new TwoBoardUpdater();
         final int BOARD_TOP = 0;
@@ -40,6 +62,7 @@ public class TetrisJPanel2P
         super.addKeyListener(listener);
         super.setFocusable(true);
     }
+
 
     public class MyKeyListener
             implements KeyListener
@@ -128,6 +151,7 @@ public class TetrisJPanel2P
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        
         board1.paint(g2d, cellSize);
         board2.paint(g2d, cellSize);
     }
@@ -142,12 +166,17 @@ public class TetrisJPanel2P
         frame.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        byte loserData;
+        game.run();
+    }
 
+    public void run()
+            throws InterruptedException
+    {
+        
         mainLoop:
         while (true)
         {
-            loserData = game.bu.update(game.board1, game.board2);
+            loserData = bu.update(board1, board2);
             switch (loserData)
             {
                 case 0:
@@ -155,37 +184,33 @@ public class TetrisJPanel2P
                 default:
                     break mainLoop;
             }
-            game.repaint();
+            repaint();
         }
-        game.repaint();
+        repaint();
         boolean transp = false;
+        for (int i = 0; i < 6; ++i)
         {
-            for (int i = 0; i < 6; ++i)
+            TimeUnit.MILLISECONDS.sleep(500);
+            switch (loserData)
             {
-                TimeUnit.MILLISECONDS.sleep(500);
-                switch (loserData)
-                {
-                    case 1:
-                        game.board1.currentTetromino.setTransparent(transp ^=
-                                true);
-                        break;
-                    case 3:
-                        game.board1.currentTetromino.setTransparent(transp ^=
-                                true);
-                        game.board2.currentTetromino.setTransparent(transp);
-                        break;
-                    case 2:
-                        game.board2.currentTetromino.setTransparent(transp ^=
-                                true);
-                        break;
-                    case 0:
-                        System.out.println("Error");
-                        break;
-                }
-                game.repaint();
+                case 1:
+                    board1.currentTetromino.setTransparent(transp ^= true);
+                    board2.winner();
+                    break;
+                case 3:
+                    board1.winner();
+                    board2.winner();
+                    break;
+                case 2:
+                    board2.currentTetromino.setTransparent(transp ^= true);
+                    board1.winner();
+                    break;
+                case 0:
+                    System.out.println("Error");
+                    break;
             }
+            repaint();
         }
         System.out.println("Done");
     }
-
 }

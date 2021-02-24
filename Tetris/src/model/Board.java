@@ -29,6 +29,7 @@ public class Board
     public boolean fallFast = false;
     public boolean ignoreFallFast = false;
     public long toSend = 0;
+    private boolean winner = false;
 
     /**
      * Constructor for board.
@@ -157,7 +158,10 @@ public class Board
 
             }
         }
-        currentTetromino.paint(g2d, left, top, cellSize);
+        if (!winner)
+        {
+            currentTetromino.paint(g2d, left, top, cellSize);
+        }
     }
 
     public void recieve(long amount)
@@ -180,6 +184,28 @@ public class Board
                 cells[i][j] = Cell.WHITE;
             }
             cells[pos][j] = Cell.BLACK;
+        }
+    }
+
+    public void winner()
+    {
+        if (!winner)
+        {
+            for (int i = 0; i < WIDTH; ++i)
+            {
+                for (int j = 0; j < HEIGHT; ++j)
+                {
+                    cells[i][j] = Cell.BLACK;
+                }
+            }
+            cells[0][0] = cells[0][1] = cells[1][2] = cells[2][0] =
+                    cells[2][1] = cells[3][2] = cells[4][1] = cells[4][0] =
+                    cells[1][4] = cells[2][4] = cells[3][4] = cells[2][5] =
+                    cells[1][6] = cells[2][6] = cells[3][6] = cells[1][8] =
+                    cells[1][9] = cells[1][10] = cells[1][11] = cells[2][9] =
+                    cells[3][10] = cells[4][8] = cells[4][9] = cells[4][10] =
+                    cells[4][11] = Cell.YELLOW;
+            winner = true;
         }
     }
 }

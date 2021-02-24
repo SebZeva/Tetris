@@ -1,12 +1,17 @@
+
 package MainGame;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.Board;
@@ -19,14 +24,37 @@ public class TetrisJPanel
     public static final int CANVAS_WIDTH = 916;
     public static final int CANVAS_HEIGHT = 840;
     private final int cellSize = 40;
-    private final Board board;
-    private final BoardUpdater bu;
+    private Board board;
+    private BoardUpdater bu;
+
+    public void reset()
+    {
+        bu = new BoardUpdater();
+        final int BOARD_TOP = 0;
+        final int BOARD_LEFT = 250;
+        final int BOARD_WIDTH = 10;
+        final int BOARD_HEIGHT = 20;
+        board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
+    }
 
     public TetrisJPanel()
     {
         bu = new BoardUpdater();
         final int BOARD_TOP = 0;
-        final int BOARD_LEFT = 250;
+        final int BOARD_LEFT = 0;
+        final int BOARD_WIDTH = 10;
+        final int BOARD_HEIGHT = 20;
+        board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
+        KeyListener listener = new MyKeyListener();
+        super.addKeyListener(listener);
+        super.setFocusable(true);
+    }
+    
+    public TetrisJPanel(CardLayout cl, JPanel cards)
+    {
+        bu = new BoardUpdater();
+        final int BOARD_TOP = 0;
+        final int BOARD_LEFT = 0;
         final int BOARD_WIDTH = 10;
         final int BOARD_HEIGHT = 20;
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
@@ -103,6 +131,7 @@ public class TetrisJPanel
     public static void main(String[] args)
             throws InterruptedException
     {
+        System.out.println(Arrays.toString(args));
         final String TITLE = "Tetris";
         JFrame frame = new JFrame(TITLE);
         TetrisJPanel game = new TetrisJPanel();
@@ -118,10 +147,9 @@ public class TetrisJPanel
                 break;
             }
             game.repaint();
-            TimeUnit.MILLISECONDS.sleep(10);
         }
         game.repaint();
-        boolean transp = false;
+        boolean transp = false; 
         for (int i = 0; i < 6; ++i)
         {
             TimeUnit.MILLISECONDS.sleep(500);
@@ -129,6 +157,6 @@ public class TetrisJPanel
             game.repaint();
         }
         System.out.println("Done");
+        game.reset();
     }
-
 }
