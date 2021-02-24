@@ -189,22 +189,52 @@ public class Board
 
     public void winner()
     {
-        if (!winner)
+        final int IMG_HEIGHT = 14;
+        final int IMG_WIDTH = 5;
+        if (!winner && HEIGHT > IMG_HEIGHT && WIDTH > IMG_WIDTH)
         {
-            for (int i = 0; i < WIDTH; ++i)
+            String[] img =
+            {
+                "0...0",
+                "0.0.0",
+                "0.0.0",
+                ".0.0.",
+                ".....",
+                ".000.",
+                "..0..",
+                "..0..",
+                ".000.",
+                ".....",
+                ".0..0",
+                ".00.0",
+                ".0.00",
+                ".0..0"
+            };
+            for (int i = 0; i < IMG_WIDTH; ++i)
+            {
+                for (int j = 0; j < IMG_HEIGHT; ++j)
+                {
+                    if (img[j].charAt(i) == '0')
+                    {
+                        cells[i][j] = Cell.YELLOW;
+                    }
+                    else
+                    {
+                        cells[i][j] = Cell.BLACK;
+                    }
+                }
+                for (int j = IMG_HEIGHT; j < HEIGHT; ++j)
+                {
+                    cells[i][j] = Cell.BLACK;
+                }
+            }
+            for (int i = IMG_WIDTH; i < WIDTH; ++i)
             {
                 for (int j = 0; j < HEIGHT; ++j)
                 {
                     cells[i][j] = Cell.BLACK;
                 }
             }
-            cells[0][0] = cells[0][1] = cells[1][2] = cells[2][0] =
-                    cells[2][1] = cells[3][2] = cells[4][1] = cells[4][0] =
-                    cells[1][4] = cells[2][4] = cells[3][4] = cells[2][5] =
-                    cells[1][6] = cells[2][6] = cells[3][6] = cells[1][8] =
-                    cells[1][9] = cells[1][10] = cells[1][11] = cells[2][9] =
-                    cells[3][10] = cells[4][8] = cells[4][9] = cells[4][10] =
-                    cells[4][11] = Cell.YELLOW;
             winner = true;
         }
     }
