@@ -206,6 +206,11 @@ public class Tetromino
         return top;
     }
 
+    public void moveUp()
+    {
+        --top;
+    }
+
     public int[][] getRelativeCoords()
     {
         return SHAPES_COORD.get(shape)[rotation];

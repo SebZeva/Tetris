@@ -19,9 +19,13 @@ public class Board
     private final int WIDTH;
     private final int HEIGHT;
     private final Cell[][] cells;
-    public Tetromino currentTetromino;
+    private Tetromino currentTetromino;
     public int left;
     public int top;
+    public boolean movedLeft = true;
+    public boolean movedRight = true;
+    public boolean moveLeftOnce = false;
+    public boolean moveRightOnce = false;
     public boolean moveLeft = false;
     public boolean moveRight = false;
     public boolean rotateLeft = false;
@@ -126,7 +130,7 @@ public class Board
                 }
             }
         }
-        toSend += count / 2;
+        toSend += count == 0 ? 0 : count - 1;
         currentTetromino = new Tetromino();
         return !currentTetromino.collides(this);
     }
@@ -138,6 +142,14 @@ public class Board
 
     public boolean move(boolean right)
     {
+        if (right)
+        {
+            movedRight = true;
+        }
+        else
+        {
+            movedLeft = true;
+        }
         return currentTetromino.move(this, right);
     }
 
@@ -184,6 +196,7 @@ public class Board
                 cells[i][j] = Cell.WHITE;
             }
             cells[pos][j] = Cell.BLACK;
+            currentTetromino.moveUp();
         }
     }
 
@@ -237,5 +250,10 @@ public class Board
             }
             winner = true;
         }
+    }
+
+    public void setTetrominoTransparent(boolean b)
+    {
+        currentTetromino.setTransparent(b);
     }
 }

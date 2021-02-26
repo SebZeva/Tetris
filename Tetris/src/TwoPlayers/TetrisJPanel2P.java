@@ -194,7 +194,7 @@ public class TetrisJPanel2P
             switch (loserData)
             {
                 case 1:
-                    board1.currentTetromino.setTransparent(transp ^= true);
+                    board1.setTetrominoTransparent(transp ^= true);
                     board2.winner();
                     break;
                 case 3:
@@ -202,7 +202,7 @@ public class TetrisJPanel2P
                     board2.winner();
                     break;
                 case 2:
-                    board2.currentTetromino.setTransparent(transp ^= true);
+                    board2.setTetrominoTransparent(transp ^= true);
                     board1.winner();
                     break;
                 case 0:

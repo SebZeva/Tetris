@@ -62,6 +62,16 @@ public enum UpdaterFuncEnum
         {
             board.move(board.moveRight);
         }
+        if (board.moveLeftOnce)
+        {
+            board.moveLeftOnce = false;
+            board.move(false);
+        }
+        if (board.moveRightOnce)
+        {
+            board.moveRightOnce = false;
+            board.move(true);
+        }
         return true;
     }
 

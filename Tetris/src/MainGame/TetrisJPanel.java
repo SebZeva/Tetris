@@ -10,8 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.Board;
@@ -27,34 +25,11 @@ public class TetrisJPanel
     private Board board;
     private BoardUpdater bu;
 
-    public void reset()
-    {
-        bu = new BoardUpdater();
-        final int BOARD_TOP = 0;
-        final int BOARD_LEFT = 250;
-        final int BOARD_WIDTH = 10;
-        final int BOARD_HEIGHT = 20;
-        board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
-    }
-
     public TetrisJPanel()
     {
         bu = new BoardUpdater();
         final int BOARD_TOP = 0;
-        final int BOARD_LEFT = 0;
-        final int BOARD_WIDTH = 10;
-        final int BOARD_HEIGHT = 20;
-        board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
-        KeyListener listener = new MyKeyListener();
-        super.addKeyListener(listener);
-        super.setFocusable(true);
-    }
-    
-    public TetrisJPanel(CardLayout cl, JPanel cards)
-    {
-        bu = new BoardUpdater();
-        final int BOARD_TOP = 0;
-        final int BOARD_LEFT = 0;
+        final int BOARD_LEFT = 250;
         final int BOARD_WIDTH = 10;
         final int BOARD_HEIGHT = 20;
         board = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
@@ -86,9 +61,11 @@ public class TetrisJPanel
                     break;
                 case KeyEvent.VK_LEFT:
                     board.moveLeft = true;
+                    board.movedLeft = false;
                     break;
                 case KeyEvent.VK_RIGHT:
                     board.moveRight = true;
+                    board.movedRight = false;
                     break;
                 case KeyEvent.VK_DOWN:
                     board.fallFast = true;
@@ -104,9 +81,17 @@ public class TetrisJPanel
             {
                 case KeyEvent.VK_LEFT:
                     board.moveLeft = false;
+                    if (!board.movedLeft)
+                    {
+                        board.moveLeftOnce = true;
+                    }
                     break;
                 case KeyEvent.VK_RIGHT:
                     board.moveRight = false;
+                    if (!board.movedRight)
+                    {
+                        board.moveRightOnce = true;
+                    }
                     break;
                 case KeyEvent.VK_DOWN:
                     board.fallFast = false;
@@ -153,10 +138,9 @@ public class TetrisJPanel
         for (int i = 0; i < 6; ++i)
         {
             TimeUnit.MILLISECONDS.sleep(500);
-            game.board.currentTetromino.setTransparent(transp ^= true);
+            game.board.setTetrominoTransparent(transp ^= true);
             game.repaint();
         }
         System.out.println("Done");
-        game.reset();
     }
 }
