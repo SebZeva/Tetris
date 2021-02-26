@@ -1,8 +1,6 @@
 package TwoPlayers;
 
-import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -24,29 +22,11 @@ public class TetrisJPanel2P
     private Board board1;
     private Board board2;
     private TwoBoardUpdater bu;
-    byte loserData;
+    private byte loserData;
 
     public TetrisJPanel2P()
     {
         loserData = 0;
-        bu = new TwoBoardUpdater();
-        final int BOARD_TOP = 0;
-        final int BOARD_LEFT = 0;
-        final int BOARD_WIDTH = 10;
-        final int BOARD_HEIGHT = 20;
-        final int BOARD2_TOP = 0;
-        final int BOARD2_LEFT = 500;
-        final int BOARD2_WIDTH = 10;
-        final int BOARD2_HEIGHT = 20;
-        board1 = new Board(BOARD_WIDTH, BOARD_HEIGHT, BOARD_LEFT, BOARD_TOP);
-        board2 = new Board(BOARD2_WIDTH, BOARD2_HEIGHT, BOARD2_LEFT, BOARD2_TOP);
-        KeyListener listener = new MyKeyListener();
-        super.addKeyListener(listener);
-        super.setFocusable(true);
-    }
-
-    public TetrisJPanel2P(CardLayout cl, JPanel cards)
-    {
         bu = new TwoBoardUpdater();
         final int BOARD_TOP = 0;
         final int BOARD_LEFT = 0;
