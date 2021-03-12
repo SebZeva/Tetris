@@ -1,5 +1,5 @@
-# Tetris  
-Joku honetan, jausten ari diren piezak, **tetromino** deitutakoak, horizontalki mugitu eta biratu behar dira behean blokeatuta geratu baino lehen. Blokeatutako piezen errenkada oso bat lortuz gero, errenkada garbituko da. Helburua **tetromino** asko garbitzea da pieza berrientzat espazio gabe geratu gabe.
+# Jolasa  
+Jolas honetan, jausten ari diren piezak, **tetromino** deitutakoak, horizontalki mugitu eta biratu behar dira behean blokeatuta geratu baino lehen. Blokeatutako piezen errenkada oso bat lortuz gero, errenkada garbituko da. Helburua **tetromino** asko garbitzea da pieza berrientzat espazio gabe geratu gabe.
 
 ## Bi jokalari  
 Bi jokalariek jokatzen dutenean, puntu bat lortzen da errenkada bat baino gehiago aldi berean garbitzean. puntuak:  
