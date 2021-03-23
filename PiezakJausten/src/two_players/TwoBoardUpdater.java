@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TwoPlayers;
+package two_players;
 
-import MainGame.UpdaterFuncEnum;
-import MainGame.UpdaterNode;
+import main_game.UpdaterFuncEnum;
+import main_game.UpdaterNode;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;

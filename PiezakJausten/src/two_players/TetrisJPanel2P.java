@@ -1,4 +1,4 @@
-package TwoPlayers;
+package two_players;
 
 import java.awt.Color;
 import java.awt.Graphics;

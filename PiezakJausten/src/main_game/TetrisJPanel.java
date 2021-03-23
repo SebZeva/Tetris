@@ -1,6 +1,7 @@
+package main_game;
 
-package MainGame;
-
+import score.SQLiteKudeatu;
+import score.Score;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,8 +11,12 @@ import java.awt.event.KeyListener;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import model.Board;
+import score.ScoreenTableModela;
+import score.ScoresTable;
 
 @SuppressWarnings("serial")
 public class TetrisJPanel
@@ -115,7 +120,45 @@ public class TetrisJPanel
     public static void main(String[] args)
             throws InterruptedException
     {
-        System.out.println(Arrays.toString(args));
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info
+                    : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        }
+        catch (ClassNotFoundException ex)
+        {
+            java.util.logging.Logger.getLogger(JFrame.class.
+                    getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        catch (InstantiationException ex)
+        {
+            java.util.logging.Logger.getLogger(JFrame.class.
+                    getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        catch (IllegalAccessException ex)
+        {
+            java.util.logging.Logger.getLogger(JFrame.class.
+                    getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
+            java.util.logging.Logger.getLogger(JFrame.class.
+                    getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
         final String TITLE = "Tetris";
         JFrame frame = new JFrame(TITLE);
         TetrisJPanel game = new TetrisJPanel();
@@ -133,13 +176,20 @@ public class TetrisJPanel
             game.repaint();
         }
         game.repaint();
-        boolean transp = false; 
+        boolean transp = false;
         for (int i = 0; i < 6; ++i)
         {
             TimeUnit.MILLISECONDS.sleep(500);
             game.board.setTetrominoTransparent(transp ^= true);
             game.repaint();
         }
-        System.out.println("Done");
+        frame.setVisible(false);
+        frame.remove(game);
+        String name = JOptionPane.showInputDialog(null, "Inserta tu nombre:");
+        Score scr = new Score(name, game.board.toSend);
+        SQLiteKudeatu.gehitu(scr);
+        frame.dispose();
+        ScoresTable st = new ScoresTable();
+        st.setVisible(true);
     }
 }
