@@ -1,12 +1,12 @@
 DROP TABLE Puntuak;
 
 CREATE TABLE Puntuak (
-	Izena VARCHAR(20),
-	Puntuazioa NUMBER(5,0),
-	Ordua TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	Izena TEXT,
+	Puntuazioa INTEGER,
+	Ordua INTEGER
 );
 
 INSERT INTO Puntuak(Izena, Puntuazioa) VALUES
 ('Juan', 3),
 ('Peilo', 6),
-('Oier', 9);
+('Martha', 9);
