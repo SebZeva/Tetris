@@ -6,7 +6,7 @@ CREATE TABLE Puntuak (
 	Ordua INTEGER
 );
 
-INSERT INTO Puntuak(Izena, Puntuazioa) VALUES
-('Juan', 3),
-('Peilo', 6),
-('Martha', 9);
+INSERT INTO Puntuak(Izena, Puntuazioa, Ordua) VALUES
+('Juan', 3, strftime('%s', 'now')),
+('Peilo', 6, strftime('%s', 'now')),
+('Martha', 9, strftime('%s', 'now'));
