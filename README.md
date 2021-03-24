@@ -9,7 +9,8 @@ Puntu bat lortzen da garbitutako errenkada bakoitzeko, honela:
 * 4 errenkada: **4 puntu**
 
 ## Bi jokalari  
-Bi jokalariek jokatzen dutenean, puntuak lortzen dira errenkadak garbitzean. Lortutako puntu bakoitzeko, beste jokalariari pieza errenkada bat agertuko zaio behean, espazio batekin, jokalaria garbitzeko gai izateko.
+Bi jokalariek jokatzen dutenean, puntuak lortzen dira errenkadak garbitzean. Lortutako puntu bakoitzeko, beste jokalariari pieza errenkada bat agertuko zaio behean, espazio batekin, jokalaria garbitzeko gai izateko.  
+Bi jokalarik jokatzeko, klasea bilatu eta exekutatu behar da, ez baita exekutatzen proiektua exekutatzean.
 
 ## Kontrolak
 * **Jokalari bakarra**:  
