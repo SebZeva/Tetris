@@ -1,13 +1,15 @@
 # Jolasa  
 Jolas honetan, jausten ari diren piezak, **tetromino** deitutakoak, horizontalki mugitu eta biratu behar dira behean blokeatuta geratu baino lehen. Blokeatutako piezen errenkada oso bat lortuz gero, errenkada garbituko da. Helburua **tetromino** asko garbitzea da pieza berrientzat espazio gabe geratu gabe.
 
-## Bi jokalari  
-Bi jokalariek jokatzen dutenean, puntu bat lortzen da errenkada bat baino gehiago aldi berean garbitzean. puntuak:  
-* 2 errenkada: **puntu bat**  
-* 3 errenkada: **2 puntu**  
-* 4 errenkada: **3 puntu**
+## Puntuak   
+Puntu bat lortzen da garbitutako errenkada bakoitzeko, honela:  
+* Errenkada bat: **puntu bat**  
+* 2 errenkada: **2 puntu**  
+* 3 errenkada: **3 puntu**  
+* 4 errenkada: **4 puntu**
 
-Lortutako puntu bakoitzeko, beste jokalariari pieza errenkada bat agertuko zaio behean, espazio batekin, jokalaria garbitzeko gai izateko.
+## Bi jokalari  
+Bi jokalariek jokatzen dutenean, puntuak lortzen dira errenkadak garbitzean. Lortutako puntu bakoitzeko, beste jokalariari pieza errenkada bat agertuko zaio behean, espazio batekin, jokalaria garbitzeko gai izateko.
 
 ## Kontrolak
 * **Jokalari bakarra**:  
